@@ -191,7 +191,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked,id=cache-$TARGETARCH$T
      echo "[+] Installing browser-use pip library from source..." \
      && ( \
         uv sync --all-extras --locked --no-dev \
-        && uv pip install fastapi uvicorn pydantic \
+        && uv pip install fastapi uvicorn pydantic pandas openpyxl \
         && python -c "import browser_use; print('browser-use installed successfully')" \
         && echo -e '\n\n' \
      ) | tee -a /VERSION.txt
