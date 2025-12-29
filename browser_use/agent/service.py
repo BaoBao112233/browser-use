@@ -206,10 +206,11 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 
 				llm = get_llm_by_name(default_llm_name)
 			else:
-				# No default LLM specified, use the original default
-				from browser_use import ChatBrowserUse
-
-				llm = ChatBrowserUse()
+				# No default LLM specified, raise error
+				raise ValueError(
+					'No LLM provided and no DEFAULT_LLM set in environment/config. '
+					'Please provide an LLM (e.g., ChatOpenAI, ChatGoogle) or set DEFAULT_LLM.'
+				)
 
 		# set flashmode = True if llm is ChatBrowserUse
 		if llm.provider == 'browser-use':

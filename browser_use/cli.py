@@ -127,10 +127,7 @@ if '--template' in sys.argv:
 		click.echo('\nNext steps:')
 		click.echo('  1. Install browser-use:')
 		click.echo('     uv pip install browser-use')
-		click.echo('  2. Set up your API key in .env file or environment:')
-		click.echo('     BROWSER_USE_API_KEY=your-key')
-		click.echo('     (Get your key at https://cloud.browser-use.com/new-api-key)')
-		click.echo('  3. Run your script:')
+		click.echo('  2. Run your script:')
 		click.echo(f'     python {output_path.name}')
 	except Exception as e:
 		click.echo(f'❌ Error: {e}', err=True)

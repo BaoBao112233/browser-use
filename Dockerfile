@@ -138,7 +138,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-$TARGETARCH$T
      #    xfonts-scalable xfonts-utils xserver-common xvfb \
      && rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    mv /root/.local/bin/uv /root/.local/bin/uvx /bin/
 
 # Copy only dependency manifest
 WORKDIR /app
@@ -189,12 +191,14 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked,id=cache-$TARGETARCH$T
      echo "[+] Installing browser-use pip library from source..." \
      && ( \
         uv sync --all-extras --locked --no-dev \
+        && uv pip install fastapi uvicorn pydantic \
         && python -c "import browser_use; print('browser-use installed successfully')" \
         && echo -e '\n\n' \
      ) | tee -a /VERSION.txt
 
 RUN mkdir -p "$DATA_DIR/profiles/default" \
-    && chown -R $BROWSERUSE_USER:$BROWSERUSE_USER "$DATA_DIR" "$DATA_DIR"/* \
+    && touch /app/debug.log /app/info.log \
+    && chown -R $BROWSERUSE_USER:$BROWSERUSE_USER "$DATA_DIR" "$DATA_DIR"/* /app/debug.log /app/info.log \
     && ( \
         echo -e "\n\n[√] Finished Docker build successfully. Saving build summary in: /VERSION.txt" \
         && echo -e "PLATFORM=${TARGETPLATFORM} ARCH=$(uname -m) ($(uname -s) ${TARGETARCH} ${TARGETVARIANT})\n" \
