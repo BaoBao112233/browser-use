@@ -136,6 +136,10 @@ class OldConfig:
 		return os.getenv('GOOGLE_API_KEY', '')
 
 	@property
+	def GOOGLE_APPLICATION_CREDENTIALS(self) -> str:
+		return os.getenv('GOOGLE_APPLICATION_CREDENTIALS', '')
+
+	@property
 	def DEEPSEEK_API_KEY(self) -> str:
 		return os.getenv('DEEPSEEK_API_KEY', '')
 
@@ -205,6 +209,7 @@ class FlatEnvConfig(BaseSettings):
 	OPENAI_API_KEY: str = Field(default='')
 	ANTHROPIC_API_KEY: str = Field(default='')
 	GOOGLE_API_KEY: str = Field(default='')
+	GOOGLE_APPLICATION_CREDENTIALS: str = Field(default='')
 	DEEPSEEK_API_KEY: str = Field(default='')
 	GROK_API_KEY: str = Field(default='')
 	NOVITA_API_KEY: str = Field(default='')

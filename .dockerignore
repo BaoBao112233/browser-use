@@ -30,6 +30,7 @@ dist/
 *.pdf
 *.csv
 *.json
+!storage_state.json
 *.jsonl
 *.bak
 

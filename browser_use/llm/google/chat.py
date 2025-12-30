@@ -8,6 +8,7 @@ from typing import Any, Literal, TypeVar, overload
 
 from google import genai
 from google.auth.credentials import Credentials
+from google.oauth2 import service_account
 from google.genai import types
 from google.genai.types import MediaModality
 from pydantic import BaseModel
@@ -103,6 +104,7 @@ class ChatGoogle(BaseChatModel):
 	project: str | None = None
 	location: str | None = None
 	http_options: types.HttpOptions | types.HttpOptionsDict | None = None
+	service_account_json: str | None = None
 
 	# Internal client cache to prevent connection issues
 	_client: genai.Client | None = None
@@ -131,6 +133,20 @@ class ChatGoogle(BaseChatModel):
 
 		# Create client_params dict with non-None values
 		client_params = {k: v for k, v in base_params.items() if v is not None}
+
+		# Load credentials from service account JSON if provided and no credentials object exists
+		if self.service_account_json and 'credentials' not in client_params:
+			try:
+				client_params['credentials'] = service_account.Credentials.from_service_account_file(
+					self.service_account_json, scopes=['https://www.googleapis.com/auth/cloud-platform']
+				)
+			except Exception as e:
+				self.logger.error(f'Failed to load credentials from {self.service_account_json}: {e}')
+				raise ModelProviderError(
+					message=f'Failed to load credentials from {self.service_account_json}: {e}',
+					status_code=401,
+					model=self.model,
+				) from e
 
 		return client_params
 
